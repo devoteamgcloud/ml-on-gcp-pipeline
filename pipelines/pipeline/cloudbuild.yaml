@@ -1,7 +1,7 @@
 steps:
 
   # Create the pipeline JSON file
-  - name: europe-west1-docker.pkg.dev/devoteamgcloud-ml/cloud-builders/kfp-cloud-builder:slim
+  - name: python:3.10
     entrypoint: bash
     args:
       - '-c'
