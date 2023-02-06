@@ -56,6 +56,7 @@ def pipeline(
         display_name=dataset_name,
         location=region,
         bq_source=bq_source,
+        labels=dict(),
     )
 
     training_op = gcc_aip.AutoMLTabularTrainingJobRunOp(
@@ -74,6 +75,8 @@ def pipeline(
         dataset=dataset_create_op.outputs["dataset"],
         target_column="sex",
         location=region,
+        disable_early_stopping=False,
+        export_evaluated_data_items=False
     )
 
     endpoint_op = gcc_aip.EndpointCreateOp(
