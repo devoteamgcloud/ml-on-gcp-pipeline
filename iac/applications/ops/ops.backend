@@ -1,0 +1,3 @@
+bucket  = "gcs-ml-on-gcp-ops-tfstate"
+prefix  = "static.tfstate.d"
+impersonate_service_account = "terraform@ml-on-gcp-ops.iam.gserviceaccount.com"

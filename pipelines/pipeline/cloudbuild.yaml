@@ -1,0 +1,12 @@
+steps:
+
+  # Create the pipeline JSON file
+  - name: europe-west1-docker.pkg.dev/devoteamgcloud-ml/cloud-builders/kfp-cloud-builder:slim
+    entrypoint: bash
+    args:
+      - '-c'
+      - |
+        branch_name=$BRANCH_NAME
+        branch=${branch_name//\//-}
+        python pipeline.py --project ${_PROJECT_ID} --region ${_REGION} --pipeline-name image-classification --pipeline-file /workspace/pipeline.yaml --artifact-registry-url ${_ARTIFACT_REGISTRY_TEMPLATES_URL} -t latest $SHORT_SHA $branch
+    dir: '${_PROJECT_ROOT}/pipelines/image-classification'
