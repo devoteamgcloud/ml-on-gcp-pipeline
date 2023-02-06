@@ -84,13 +84,11 @@ def pipeline(
     )
 
     deploy_op = gcc_aip.ModelDeployOp(
-        project=project,
-        location=region,
         model=training_op.outputs["model"],
         endpoint=endpoint_op.outputs["endpoint"],
-        dedicated_resources_machine_type="n1-standard-4",
-        dedicated_resources_min_replica_count=1,
-        dedicated_resources_max_replica_count=1,
+        machine_type="n1-standard-4",
+        min_replica_count=1,
+        max_replica_count=1,
         deployed_model_display_name=args.pipeline_name,
     )
 
