@@ -8,5 +8,5 @@ steps:
       - |
         branch_name=$BRANCH_NAME
         branch=${branch_name//\//-}
-        python pipeline.py --project ${_PROJECT_ID} --region ${_REGION} --pipeline-name image-classification --pipeline-file /workspace/pipeline.yaml --artifact-registry-url ${_ARTIFACT_REGISTRY_TEMPLATES_URL} -t latest $SHORT_SHA $branch
-    dir: 'pipelines/image-classification'
+        python pipeline.py --project ${_PROJECT_ID} --region ${_REGION} --pipeline-name pipeline --pipeline-file /workspace/pipeline.yaml --artifact-registry-url ${_ARTIFACT_REGISTRY_TEMPLATES_URL} -t latest $SHORT_SHA $branch
+    dir: 'pipelines/pipeline'
