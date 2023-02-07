@@ -49,7 +49,9 @@ def pipeline(
     region: str,
     endpoint_name: str,
     bq_source: str,
-    dataset_name: str = "penguin",
+    prediction_type: str = "classification",
+    dataset_name: str = "credit_card_default",
+    target_column: str = "default_payment_next_month",
 ):
     dataset_create_op = gcc_aip.TabularDatasetCreateOp(
         project=project,
@@ -62,16 +64,9 @@ def pipeline(
     training_op = gcc_aip.AutoMLTabularTrainingJobRunOp(
         project=project,
         display_name=args.pipeline_name,
-        optimization_prediction_type="classification",
-        column_specs={
-            "culmen_length_mm": "numeric",
-            "culmen_depth_mm": "numeric",
-            "flipper_length_mm": "numeric",
-            "body_mass_g": "numeric",
-            "sex": "categorical",
-        },
+        optimization_prediction_type=prediction_type,
         dataset=dataset_create_op.outputs["dataset"],
-        target_column="species",
+        target_column=target_column,
         location=region,
         disable_early_stopping=False,
         export_evaluated_data_items=False,
