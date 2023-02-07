@@ -76,7 +76,8 @@ def pipeline(
         target_column="sex",
         location=region,
         disable_early_stopping=False,
-        export_evaluated_data_items=False
+        export_evaluated_data_items=False,
+        labels=dict()
     )
 
     endpoint_op = gcc_aip.EndpointCreateOp(
