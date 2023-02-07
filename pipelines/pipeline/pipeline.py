@@ -82,6 +82,8 @@ def pipeline(
         endpoint_name=endpoint_name,
     )
 
+    endpoint_op.set_caching_options(False)
+
     deploy_op = gcc_aip.ModelDeployOp(
         model=training_op.outputs["model"],
         endpoint=endpoint_op.outputs["endpoint"],
