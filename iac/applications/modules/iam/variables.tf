@@ -17,8 +17,3 @@ variable "pipeline_service_account_roles" {
   type        = list(string)
   description = "IAM roles of the service account for the pipeline."
 }
-
-variable "cloudbuild_service_account_roles" {
-  type        = list(string)
-  description = "IAM roles of the service account for Cloud Build."
-}

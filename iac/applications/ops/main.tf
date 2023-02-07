@@ -15,7 +15,7 @@ provider "google-beta" {
 module "api" {
   # TODO remove after dev
 
-  source = "git@github.com:devoteamgcloud/ml-on-gcp.git//iac/applications/modules/api?ref=feature/automl-pipeline"
+  source = "git@github.com:devoteamgcloud/ml-on-gcp-pipeline.git//iac/applications/modules/api?ref=feature/automl-pipeline"
   
   project_id   = var.project_id
   api_services = var.api_services
@@ -51,7 +51,7 @@ resource "google_project_iam_custom_role" "artifact_registry_role" {
 module "artifact_registry" {
   for_each = local.artifact_registry_repositories
 
-  source = "git@github.com:devoteamgcloud/ml-on-gcp.git//iac/applications/modules/artifact-registry?ref=feature/automl-pipeline"
+  source = "git@github.com:devoteamgcloud/ml-on-gcp-pipeline.git//iac/applications/modules/artifact-registry?ref=feature/automl-pipeline"
 
   description   = each.value.description
   format        = each.value.format
@@ -65,7 +65,7 @@ module "artifact_registry" {
 module "cloud_build" {
   for_each = merge(var.pipeline_triggers, var.component_triggers)
   # tflint-ignore: terraform_module_pinned_source
-  source = "git@github.com:devoteamgcloud/ml-on-gcp.git//iac/applications/modules/cloud-build?ref=feature/automl-pipeline"
+  source = "git@github.com:devoteamgcloud/ml-on-gcp-pipeline.git//iac/applications/modules/cloud-build?ref=feature/automl-pipeline"
 
   included      = each.value.included
   path          = each.value.path
