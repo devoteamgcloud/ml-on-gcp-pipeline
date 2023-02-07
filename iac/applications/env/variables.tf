@@ -37,8 +37,8 @@ variable "buckets" {
 variable "pipelines_iam" { 
   type = map(object({
     pipeline_service_account_name  = string
-    pipeline_service_account_users = map(string)
-    pipeline_service_account_roles = map(string)
+    pipeline_service_account_users = list(string)
+    pipeline_service_account_roles = list(string)
   })) 
   description = "Pipeline service account users and roles"
 }

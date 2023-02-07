@@ -49,7 +49,7 @@ resource "google_project_iam_custom_role" "artifact_registry_role" {
 }
 
 module "artifact_registry" {
-  for_each = local.artifact_registry_repositories
+  for_each = var.artifact_registry_repositories
 
   source = "git@github.com:devoteamgcloud/ml-on-gcp-pipeline.git//iac/applications/modules/artifact-registry?ref=feature/automl-pipeline"
 
@@ -84,5 +84,5 @@ resource "google_project_iam_member" "cloud-build" {
   project    = var.project_id
   role       = each.value
   member     = "serviceAccount:${data.google_project.project.number}@cloudbuild.gserviceaccount.com"
-  depends_on = [google_project_service.cloud_resource_manager_api]
+  depends_on = [time_sleep.api_propagation]
 }

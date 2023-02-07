@@ -68,5 +68,5 @@ variable "component_triggers" {
 
 variable "cloudbuild_service_account_roles" {
   description = "Roles for Cloud Build SA"
-  type        = map(string)
+  type        = list(string)
 }
