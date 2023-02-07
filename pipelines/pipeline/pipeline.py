@@ -62,14 +62,16 @@ def pipeline(
     training_op = gcc_aip.AutoMLTabularTrainingJobRunOp(
         project=project,
         display_name=args.pipeline_name,
-        optimization_prediction_type="regression",
+        optimization_prediction_type="classification",
         column_specs={
             "culmen_length_mm": "numeric",
             "culmen_depth_mm": "numeric",
             "flipper_length_mm": "numeric",
+            "body_mass_g": "numeric",
+            "sex": "categorical",
         },
         dataset=dataset_create_op.outputs["dataset"],
-        target_column="body_mass_g",
+        target_column="species",
         location=region,
         disable_early_stopping=False,
         export_evaluated_data_items=False,
