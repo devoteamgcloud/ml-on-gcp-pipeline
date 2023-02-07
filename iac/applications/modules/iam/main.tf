@@ -2,7 +2,6 @@
 resource "google_service_account" "sa-vertex-pipeline" {
   project    = var.project_id
   account_id = var.pipeline_service_account_name
-  depends_on = [google_project_service.billing_api]
 }
 
 resource "google_project_iam_member" "sa-vertex-pipeline" {

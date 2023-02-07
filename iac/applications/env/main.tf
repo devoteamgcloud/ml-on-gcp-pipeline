@@ -33,7 +33,7 @@ module "buckets" {
   source = "git@github.com:devoteamgcloud/ml-on-gcp-pipeline.git//iac/applications/modules/gcs?ref=feature/automl-pipeline"
 
   project_id                  = var.project_id
-  bucket                        = each.value.name
+  bucket                      = each.value.name
   bucket_location             = each.value.region
   bucket_storage_class        = "STANDARD"
   bucket_force_destroy        = false
@@ -48,7 +48,7 @@ resource "null_resource" "dummy_pipeline_job" {
     environment = {
       PROJECT = var.project_id
       REGION  = var.region
-      TF_SA   = var.service_accounts["terraform"].email
+      TF_SA   = var.terraform_sa
     }
   }
   depends_on = [time_sleep.api_propagation]
