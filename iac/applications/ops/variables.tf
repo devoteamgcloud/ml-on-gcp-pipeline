@@ -13,6 +13,11 @@ variable "zone" {
   type        = string
 }
 
+variable "terraform_sa" {
+  description = "Service account to impersonate for Terraform"
+  type        = string
+}
+
 variable "env_projects" {
   description = "The environment projects where Vertex AI will run."
   type        = set(string)
@@ -61,33 +66,7 @@ variable "component_triggers" {
   }))
 }
 
-# IAM
-variable "groups" { type = any }
-
-variable "folders" { type = any }
-
-variable "service_accounts" {
-  type = map(object({
-    gcp_project_id = optional(string)
-    description    = optional(string)
-    display_name   = optional(string)
-    create         = optional(bool)
-    disabled       = optional(bool)
-    email          = optional(string)
-    groups         = optional(map(list(string)))
-    sa             = optional(map(list(string)))
-    users          = optional(map(list(string)))
-    tenant         = optional(string)
-    environment    = optional(string)
-    stage          = optional(string)
-    name           = optional(string)
-    attributes     = optional(list(string))
-    label_order    = optional(list(string))
-  }))
+variable "cloudbuild_service_account_roles" {
+  description = "Roles for Cloud Build SA"
+  type        = map(string)
 }
-
-variable "group_roles" { type = any }
-
-variable "service_account_roles" { type = any }
-
-variable "user_roles" { type = any }

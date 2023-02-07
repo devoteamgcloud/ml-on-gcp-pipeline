@@ -2,21 +2,21 @@ provider "google" {
   project                     = var.project_id
   region                      = var.region
   zone                        = var.zone
-  impersonate_service_account = var.service_accounts["terraform"].email
+  impersonate_service_account = var.terraform_sa
 }
 
 provider "google-beta" {
   project                     = var.project_id
   region                      = var.region
   zone                        = var.zone
-  impersonate_service_account = var.service_accounts["terraform"].email
+  impersonate_service_account = var.terraform_sa
 }
 
 module "api" {
   # TODO remove after dev
-  # tflint-ignore: terraform_module_pinned_source
-  source = "git@github.com:devoteamgcloud/accel-vertex-ai-cookiecutter-templates.git//terraform-modules/api"
-  # source       = "git@github.com:devoteamgcloud/accel-vertex-ai-cookiecutter-templates.git//terraform-modules/api?ref=feature/base-template"
+
+  source = "git@github.com:devoteamgcloud/ml-on-gcp.git//iac/applications/modules/api?ref=feature/automl-pipeline"
+  
   project_id   = var.project_id
   api_services = var.api_services
 }
@@ -30,7 +30,7 @@ resource "time_sleep" "api_propagation" {
 module "buckets" {
   for_each = var.buckets
 
-  source = "git@github.com:devoteamgcloud/tf-gcp-modules-cloud-storage.git?ref=v0.0.2"
+  source = "git@github.com:devoteamgcloud/ml-on-gcp.git//iac/applications/modules/gcs?ref=feature/automl-pipeline"
 
   project_id                  = var.project_id
   name                        = each.value.name
@@ -54,13 +54,14 @@ resource "null_resource" "dummy_pipeline_job" {
   depends_on = [time_sleep.api_propagation]
 }
 
-module "basic" {
-  source = "git@github.com:devoteamgcloud/terraform-gcp-foundation.git//iam/basic?ref=v0.2.7"
+module "iam" {
+  for_each = var.pipelines_iam
+  source = "git@github.com:devoteamgcloud/ml-on-gcp.git//iac/applications/modules/iam?ref=feature/automl-pipeline"
 
-  groups           = local.groups
-  projects         = local.project_iam
-  service_accounts = local.all_service_accounts
-  folders          = local.folders
+  project_id                     = var.project_id
+  pipeline_service_account_name  = each.value.pipeline_service_account_name
+  pipeline_service_account_users = each.value.pipeline_service_account_users
+  pipeline_service_account_roles = each.value.pipeline_service_account_roles
 
-  depends_on = [null_resource.dummy_pipeline_job]
+  depends_on = [module.api]
 }

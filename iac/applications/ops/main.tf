@@ -2,21 +2,21 @@ provider "google" {
   project                     = var.project_id
   region                      = var.region
   zone                        = var.zone
-  impersonate_service_account = var.service_accounts["terraform"].email
+  impersonate_service_account = var.terraform_sa
 }
 
 provider "google-beta" {
   project                     = var.project_id
   region                      = var.region
   zone                        = var.zone
-  impersonate_service_account = var.service_accounts["terraform"].email
+  impersonate_service_account = var.terraform_sa
 }
 
 module "api" {
   # TODO remove after dev
-  # tflint-ignore: terraform_module_pinned_source
-  source = "git@github.com:devoteamgcloud/accel-vertex-ai-cookiecutter-templates.git//terraform-modules/api"
 
+  source = "git@github.com:devoteamgcloud/ml-on-gcp.git//iac/applications/modules/api?ref=feature/automl-pipeline"
+  
   project_id   = var.project_id
   api_services = var.api_services
 }
@@ -48,26 +48,24 @@ resource "google_project_iam_custom_role" "artifact_registry_role" {
   ]
 }
 
-module "artifact_repository" {
-  for_each = local.updated_artifact_registry_maps
+module "artifact_registry" {
+  for_each = local.artifact_registry_repositories
 
-  source = "git@github.com:devoteamgcloud/tf-gcp-modules-artifact-registry.git?ref=v0.0.2"
+  source = "git@github.com:devoteamgcloud/ml-on-gcp.git//iac/applications/modules/artifact-registry?ref=feature/automl-pipeline"
 
-  project_id = var.project_id
+  description   = each.value.description
+  format        = each.value.format
+  location      = each.value.location
+  project_id    = var.project_id
+  repository_id = each.key
 
-  artifact_registry_repository_id  = each.key
-  artifact_registry_format         = each.value.format
-  artifact_registry_location       = each.value.location
-  artifact_registry_description    = each.value.description
-  artifact_registry_role_group_map = each.value.role_group_map
-
-  depends_on = [time_sleep.api_propagation]
+  depends_on = [module.api]
 }
 
 module "cloud_build" {
   for_each = merge(var.pipeline_triggers, var.component_triggers)
   # tflint-ignore: terraform_module_pinned_source
-  source = "git@github.com:devoteamgcloud/accel-vertex-ai-cookiecutter-templates.git//terraform-modules/cloud_build"
+  source = "git@github.com:devoteamgcloud/ml-on-gcp.git//iac/applications/modules/cloud-build?ref=feature/automl-pipeline"
 
   included      = each.value.included
   path          = each.value.path
@@ -80,11 +78,11 @@ module "cloud_build" {
   depends_on = [time_sleep.api_propagation]
 }
 
-module "basic" {
-  source = "git@github.com:devoteamgcloud/terraform-gcp-foundation.git//iam/basic?ref=v0.2.7"
-
-  groups           = local.groups
-  projects         = local.project_iam
-  service_accounts = local.all_service_accounts
-  folders          = local.folders
+# Cloud Build - grant additional permissions
+resource "google_project_iam_member" "cloud-build" {
+  for_each = toset(var.cloudbuild_service_account_roles)
+  project    = var.project_id
+  role       = each.value
+  member     = "serviceAccount:${data.google_project.project.number}@cloudbuild.gserviceaccount.com"
+  depends_on = [google_project_service.cloud_resource_manager_api]
 }
