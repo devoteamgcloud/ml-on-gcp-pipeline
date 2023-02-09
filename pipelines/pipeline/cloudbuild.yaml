@@ -1,0 +1,13 @@
+steps:
+
+  # Create the pipeline JSON file
+  - name: python:3.10
+    entrypoint: bash
+    args:
+      - '-c'
+      - |
+        pip install -r requirements.txt
+        branch_name=$BRANCH_NAME
+        branch=${branch_name//\//-}
+        python pipeline.py --project ${_PROJECT_ID} --region ${_REGION} --pipeline-name pipeline --pipeline-file /workspace/pipeline.yaml --artifact-registry-url ${_ARTIFACT_REGISTRY_TEMPLATES_URL} -t latest $SHORT_SHA $branch
+    dir: 'pipelines/pipeline'
