@@ -15,7 +15,7 @@ provider "google-beta" {
 module "api" {
   # TODO remove after dev
 
-  source = "git@github.com:devoteamgcloud/ml-on-gcp-pipeline.git//iac/applications/modules/api?ref=feature/automl-pipeline"
+  source = "git@github.com:devoteamgcloud/ml-on-gcp-pipeline.git//iac/applications/modules/api"
   
   project_id   = var.project_id
   api_services = var.api_services
@@ -30,7 +30,7 @@ resource "time_sleep" "api_propagation" {
 module "buckets" {
   for_each = var.buckets
 
-  source = "git@github.com:devoteamgcloud/ml-on-gcp-pipeline.git//iac/applications/modules/gcs?ref=feature/automl-pipeline"
+  source = "git@github.com:devoteamgcloud/ml-on-gcp-pipeline.git//iac/applications/modules/gcs"
 
   project_id                  = var.project_id
   bucket                      = each.value.name
@@ -56,7 +56,7 @@ resource "null_resource" "dummy_pipeline_job" {
 
 module "iam" {
   for_each = var.pipelines_iam
-  source = "git@github.com:devoteamgcloud/ml-on-gcp-pipeline.git//iac/applications/modules/iam?ref=feature/automl-pipeline"
+  source = "git@github.com:devoteamgcloud/ml-on-gcp-pipeline.git//iac/applications/modules/iam"
 
   project_id                     = var.project_id
   pipeline_service_account_name  = each.value.pipeline_service_account_name

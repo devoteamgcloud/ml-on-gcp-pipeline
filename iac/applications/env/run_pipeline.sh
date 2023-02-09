@@ -5,7 +5,7 @@ bucket_name="gs://${PROJECT}-dummy-pipeline-staging"
 gsutil mb -l $REGION -c standard -p $PROJECT $bucket_name
 gcloud storage buckets add-iam-policy-binding $bucket_name --member="serviceAccount:${TF_SA}" --role="roles/storage.admin"
 datetime=$(date +'%s')
-pipeline_job="https://europe-west1-aiplatform.googleapis.com/v1/projects/${PROJECT}/locations/europe-west1/pipelineJobs?pipelineJobId=hello-world-${datetime}"
+pipeline_job="https://us-central1-aiplatform.googleapis.com/v1/projects/${PROJECT}/locations/us-central1/pipelineJobs?pipelineJobId=hello-world-${datetime}"
 
 curl -X POST -H "Authorization: Bearer $(gcloud auth print-access-token)" -H "Content-Type: application/json" $pipeline_job -d '{
   "name": "dummy-pipeline",

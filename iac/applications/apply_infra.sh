@@ -5,7 +5,7 @@ project_uat=ml-on-gcp-uat
 project_prod=ml-on-gcp-prod
 project_ops=ml-on-gcp-ops
 
-cd ml-on-gcp/iac/applications/env
+cd ml-on-gcp-pipeline/iac/applications/env
 
 for env in dev uat prod ops; do
 
